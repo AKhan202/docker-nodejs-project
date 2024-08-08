@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  # Node.js Application
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/mydatabase
+    # Uncomment if you need to connect to MongoDB locally
+    # networks:
+    #   - backend
+
+  # MongoDB Database
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  # Mongo Express UI
+  mongo-express:
+    image: mongo-express:latest
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongo
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongo
+      - ME_CONFIG_MONGODB_PORT=27017
+    # Uncomment if you need to connect to MongoDB locally
+    # networks:
+    #   - backend
+
+volumes:
+  mongo-data:
+    driver: local
+
+# Uncomment if you need to connect to MongoDB locally
+# networks:
+#   backend:
